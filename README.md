@@ -1,4 +1,4 @@
-AndroidJsonProvider
+Android Json Provider
 ===================
 
 Library mostly used for generic parsing(serializing) of JSON responses/requests, with useful android utils.
