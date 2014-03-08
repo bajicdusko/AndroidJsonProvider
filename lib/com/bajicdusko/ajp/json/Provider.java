@@ -51,7 +51,7 @@ public class Provider {
                 items.add(tInstance);
             }
         }
-        catch (Exception e) { /* Samo ce vratiti praznu listu */ }
+        catch (Exception e) {}
 
         return items;
     }
@@ -70,7 +70,7 @@ public class Provider {
                 items.add(tInstance);
             }
         }
-        catch (Exception e) { /* Samo ce vratiti praznu listu */ }
+        catch (Exception e) {}
 
         return items;
     }
@@ -89,7 +89,7 @@ public class Provider {
 				items.add(responseObject);
 			}
 		} 
-		catch (Exception e) { /* Samo ce vratiti praznu listu */ }
+		catch (Exception e) {}
 
 		return items;
 	}
@@ -283,17 +283,9 @@ public class Provider {
 		
 		conn.connect();
 		OutputStream out = conn.getOutputStream();
-		
-		
-		//FileInputStream fis = new FileInputStream();
+
 		bitmap.compress(Bitmap.CompressFormat.PNG, 50, out);
-		
-//		byte[] buf = new byte[1024];
-//		int len;
-//		while ((len = fis.read(buf)) > 0) {
-//			out.write(buf, 0, len);
-//		}
-//		fis.close();		
+
 		
 		out.flush();
 		out.close();

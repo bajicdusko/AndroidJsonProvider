@@ -88,9 +88,7 @@ public class Model {
 			for ( int i = 0 ; i < list.length() ; i++ ) {
 				items.add(new Model(list.getJSONObject(i)));
 			}
-		} catch (Exception e) {
-			// Samo ce vratiti praznu listu
-		}
+		} catch (Exception e) {}
 
 		return items;
 	}
