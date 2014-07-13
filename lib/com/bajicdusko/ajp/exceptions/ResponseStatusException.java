@@ -5,7 +5,7 @@ public class ResponseStatusException extends Exception {
 	public ResponseStatusException(int statusCode) {
 		super(String.valueOf(statusCode));
 	}
-
+    public ResponseStatusException(String message) { super(message); }
 	/**
 	 * 
 	 */

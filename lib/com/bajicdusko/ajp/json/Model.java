@@ -1,16 +1,12 @@
 package com.bajicdusko.ajp.json;
 
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 import android.annotation.SuppressLint;
 import android.text.Html;
@@ -23,6 +19,9 @@ public class Model {
 	
 	@JsonResponseParam(Name="exceptionMessage")
 	public String ExceptionMessage;
+
+    @JsonResponseParam(Name="forceClose")
+    public boolean ForceClose;
 	
 	public Model(){ }
 	
@@ -71,6 +70,28 @@ public class Model {
 			return new Date();
 		}
 	}
+
+    public float getFloat(String floatValue)
+    {
+        try
+        {
+            return (float)this.jsonObject.getDouble(floatValue);
+        }
+        catch(Exception ex){
+            return 0;
+        }
+    }
+
+    public double getDouble(String doubleValue)
+    {
+        try
+        {
+            return this.jsonObject.getDouble(doubleValue);
+        }
+        catch(Exception ex){
+            return 0;
+        }
+    }
 	
 	public int getInt(String fieldName) {		
 		try {
@@ -88,7 +109,9 @@ public class Model {
 			for ( int i = 0 ; i < list.length() ; i++ ) {
 				items.add(new Model(list.getJSONObject(i)));
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			// Samo ce vratiti praznu listu
+		}
 
 		return items;
 	}
@@ -103,60 +126,7 @@ public class Model {
 		return item;
 	}
 	
-	protected <T extends Model> T getModel(T t)
-	{
-		Field[] fields = t.getClass().getFields();
-		
-		for (Field field : fields) {
-			Annotation an = field.getAnnotation(JsonResponseParam.class);
-						
-			if(an != null){
-				try 
-				{
-				
-					if(field.getType() == boolean.class)				
-						field.setBoolean(t, t.getBool(((JsonResponseParam)an).Name()));
-					
-					if(field.getType() == String.class)
-						field.set(t,  t.getString(((JsonResponseParam)an).Name()));
-				
-					if(field.getType() == int.class)
-						field.setInt(t,  t.getInt(((JsonResponseParam)an).Name()));
-					
-					if(field.getType() == Date.class)
-						field.set(t,  t.getDate(((JsonResponseParam)an).Name()));
-					
-					if(field.getType().isArray()){
-						
-						
-						
-						ArrayList<Model> modelArray = t.getModelArray(((JsonResponseParam)an).Name());
-						ArrayList<Model> values = new ArrayList<Model>();
-						
-						for (Model model : modelArray) {
-							
-							Class<? extends Model> arrayType = field.getType().getComponentType().asSubclass(Model.class);
-							Model m = arrayType.newInstance();
-							m.jsonObject = model.jsonObject;
-							model.getModel(m);
-							values.add(m);						
-						}
-												
-						field.set(t, values.toArray((T[]) Array.newInstance(field.getType().getComponentType().asSubclass(Model.class), values.size())));
-					}
-				
-				} catch (IllegalArgumentException e) { 
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				}
-			}
-		}
 
-		return t;
-	}
 	
 	
 	

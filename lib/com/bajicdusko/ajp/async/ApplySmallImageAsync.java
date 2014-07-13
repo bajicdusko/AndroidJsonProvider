@@ -7,8 +7,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import com.bajicdusko.ajp.util.Utilities;
-
 public class ApplySmallImageAsync extends ApplyImageAsync {
 
 	public ApplySmallImageAsync(Activity activity, String url, ImageView here) {
