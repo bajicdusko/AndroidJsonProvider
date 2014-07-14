@@ -41,25 +41,27 @@ class SatelliteModel extends Model
 
 Yes, library recognizes arrays in JSON file if you have defined array in your class. All your model classes <b>needs to extend Model class</b> which contains most of business logic for json parsing.
 
-Lets use classes defined above and JSON defined above. On Android to fetch data from JSON and serialize it to defined model class, you have to make a network request in another thread, so that UI thread stays unlocked. Create a class which extends ProviderAsync as in an example below:
+Lets use classes defined above and JSON defined above. On Android to fetch data from JSON and serialize it to defined model class, you have to make a network request in another thread, so that UI thread stays unlocked. 
 
 ```
-class LoadPlanets extends ProviderAsync
-{
-    public LoadPlanets()
-    {
-        super(context, PlanetModel.class, planetJsonUrl);
-    }
-    
-    @Override
-    public onPostExecute(Object response){
-        super.onPostExecute(response);
-        
-        PlanetModel model = GetResponseModel();
-        if(model != null){
-            //do something
+onCreate(Bundle savedInstance){
+    .
+    .
+    .
+
+    new AsyncJsonProvider(getActivity(), Planet.class, "http://json.txt").shortExecute((MainActivity) getActivity());
+
+    //or
+
+    new AsyncJsonProvider(getActivity(), Planet.class, "http://json.txt").shortExecute(new OnDataLoaded() {
+        @Override
+        public void OnModelLoaded(Model responseModel) {
+            Planet p = (Planet) responseModel;
+            if (p != null) {
+                //something
+            }
         }
-    }
+    });
 }
 ```
 
