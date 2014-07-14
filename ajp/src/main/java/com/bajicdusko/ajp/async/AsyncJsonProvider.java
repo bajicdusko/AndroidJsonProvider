@@ -21,27 +21,37 @@ import java.io.IOException;
 /**
  * Created by Bajic on 12-Jul-14.
  */
-public class ProviderAsync<T extends Model, Request extends Model> extends AsyncTask<Void, Void, Object> {
+public class AsyncJsonProvider<T extends Model, Request extends Model> extends AsyncTask<Void, Void, Object> {
 
     Class<T> tClass = null;
     Request request = null;
-    T responseObject = null;
+
     String url;
     FragmentActivity activity;
+    OnDataLoaded<T> onDataLoaded;
 
-    public ProviderAsync(FragmentActivity activity, Class<T> tClass, String url)
+
+    public AsyncJsonProvider(FragmentActivity activity, Class<T> tClass, String url)
     {
         this.tClass = tClass;
         this.url = url;
         this.activity = activity;
+        onDataLoaded = (OnDataLoaded)activity;
     }
 
-    public ProviderAsync(FragmentActivity activity, Class<T> tClass, String url, Request request)
+    public AsyncJsonProvider(FragmentActivity activity, Class<T> tClass, String url, Request request, int key)
     {
         this.tClass = tClass;
         this.request = request;
         this.url = url;
         this.activity = activity;
+        try {
+            onDataLoaded = (OnDataLoaded) activity;
+        }
+        catch(Exception ex)
+        {
+
+        }
     }
 
     @Override
@@ -58,7 +68,8 @@ public class ProviderAsync<T extends Model, Request extends Model> extends Async
         else
         {
             T m = (T)response;
-            SetResponseObject(m);
+            if(onDataLoaded != null)
+                onDataLoaded.OnModelLoaded(m);
         }
     }
 
@@ -90,19 +101,9 @@ public class ProviderAsync<T extends Model, Request extends Model> extends Async
         }
     }
 
-    private void SetResponseObject(T m)
+    public final AsyncJsonProvider shortExecute(OnDataLoaded<T> onDataLoadedListener)
     {
-        responseObject = m;
-    }
-
-    public T GetResponseModel()
-    {
-        return responseObject;
-    }
-
-
-    public final ProviderAsync emptyExecute()
-    {
+        onDataLoaded = onDataLoadedListener;
         this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void)null);
         return this;
     }

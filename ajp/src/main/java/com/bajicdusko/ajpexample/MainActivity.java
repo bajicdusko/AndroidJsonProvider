@@ -1,6 +1,5 @@
 package com.bajicdusko.ajpexample;
 
-import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -10,22 +9,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bajicdusko.ajp.R;
-import com.bajicdusko.ajp.async.ProviderAsync;
-import com.bajicdusko.ajp.exceptions.NetworkStatePermissionException;
-import com.bajicdusko.ajp.exceptions.NotConnectedException;
-import com.bajicdusko.ajp.exceptions.ResponseStatusException;
-import com.bajicdusko.ajp.exceptions.UrlConnectionException;
-import com.bajicdusko.ajp.json.Provider;
+import com.bajicdusko.ajp.async.AsyncJsonProvider;
+import com.bajicdusko.ajp.async.OnDataLoaded;
+import com.bajicdusko.ajp.json.Model;
 import com.bajicdusko.ajpexample.datamodel.Planet;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements OnDataLoaded<Planet> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,30 +79,34 @@ public class MainActivity extends FragmentActivity {
             return rootView;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            new LoadData().emptyExecute();
-        }
 
-        class LoadData extends ProviderAsync
-        {
-            public LoadData()
-            {
-                super(getActivity(), Planet.class, "http://json.txt");
-            }
+            new AsyncJsonProvider(getActivity(), Planet.class, "http://json.txt").shortExecute((MainActivity) getActivity());
 
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
+            //or
 
-                Planet planet = (Planet)GetResponseModel();
-                if(planet != null)
-                {
-                    //something
+            new AsyncJsonProvider(getActivity(), Planet.class, "http://json.txt").shortExecute(new OnDataLoaded() {
+                @Override
+                public void OnModelLoaded(Model responseModel) {
+                    Planet p = (Planet) responseModel;
+                    if (p != null) {
+                        //something
+                    }
                 }
-            }
+            });
+
+            //or
         }
     }
 
+    @Override
+    public void OnModelLoaded(Planet responseModel) {
+        Planet p = (Planet) responseModel;
+        if (p != null) {
+            //something
+        }
+    }
 }
