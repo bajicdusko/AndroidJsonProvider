@@ -90,14 +90,14 @@ public onCreate(Bundle savedInstance){
 
 ```
 
-As an addition, on any exception in super.onPostExecute() DialogFragment will popout with proper message, or healthy model will return.
+As an addition, on any exception in super.onPostExecute(), MessageDialogFragment will popout with proper message, or healthy model will return.
 
 Provider class checks if connection exists, or it checks type of network connection (WIFI/Mobile), and few other useful exceptions.
 
 Provider class contains pure JSONObject and String representation of JSONObject, which you can use for any additional actions unsupported by this library.
 
 
-If you have noticed, besides @JsonResponseParam there is @JsonRequestparam annotation. It can be used in for posting arguments to webservice, for wich you expect response.
+If you have noticed, besides @JsonResponseParam there is @JsonRequestParam annotation. It can be used in for posting arguments to webservice, for which you expect response.
 
 Eg:
 
@@ -128,7 +128,17 @@ Login login = new Login();
 login.Username = "myUsername";
 login.AuthKey = "myAuthKey";
 
-User user = Provider.getModel(new User(), context, loginUrl, login);
+4th argument of AsyncJsonProvider is a request model, which maps to HTTPPOST request for given url, and expects JSONObject of User type as response.
+
+new AsyncJsonProvider(getActivity(), User.class, "http://json.txt", login).shortExecute(new OnDataLoaded() {
+        @Override
+        public void OnModelLoaded(Model responseModel) {
+            User u = (User) responseModel;
+            if (u != null) {
+                //some actions with user
+            }
+        }
+    });
 ```
 
 Method call above, creates HTTP POST request with request params: "KorisnikoIme=myUsername" and "Kljuc=myAuthKey". It is expected that loginUrl returns JSON in this format:
