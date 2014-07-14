@@ -80,12 +80,12 @@ public onCreate(Bundle savedInstance){
     //or
 
     new AsyncJsonProvider(this, Planet.class, "http://jsonarray.txt").shortArrayExecute(new OnArrayDataLoaded() {
-                    @Override
-                    public void OnModelArrayLoaded(ArrayList responseModelArray) {                        
-                        ArrayList<Planet> channels = (ArrayList<Planet>) responseModelArray;
-                        //fill listView here for example
-                    }
-                });
+        @Override
+        public void OnModelArrayLoaded(ArrayList responseModelArray) {                        
+            ArrayList<Planet> channels = (ArrayList<Planet>) responseModelArray;
+            //fill listView here for example
+        }
+    });
 }
 
 ```
