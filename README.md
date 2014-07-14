@@ -41,18 +41,31 @@ class SatelliteModel extends Model
 
 Yes, library recognizes arrays in JSON file if you have defined array in your class. All your model classes <b>needs to extend Model class</b> which contains most of business logic for json parsing.
 
-Lets use classes defined above and JSON defined above. To fetch data from JSON and serialize it to defined model class, you have to make this call:
+Lets use classes defined above and JSON defined above. On Android to fetch data from JSON and serialize it to defined model class, you have to make a network request in another thread, so that UI thread stays unlocked. Create a class which extends ProviderAsync as in an example below:
 
 ```
-PlanetModel planet = Provider.getModel(new PlanetModel(), context, planetJsonUrl);
+class LoadPlanets extends ProviderAsync
+{
+    public LoadPlanets()
+    {
+        super(context, PlanetModel.class, planetJsonUrl);
+    }
+    
+    @Override
+    public onPostExecute(Object response){
+        super.onPostExecute(response);
+        
+        PlanetModel model = GetResponseModel();
+        if(model != null){
+            //do something
+        }
+    }
+}
 ```
 
-(if you have only array in your JSON file, you can use method call defined below)
-```
-ArrayModel planet = Provider.getArrayModel(new ArrayModel(), context, planetJsonUrl);
-```
+As an addition, on any exception in super.onPostExecute() DialogFragment will popout with proper message, or healthy model will return.
 
-And that's it. Lines above throws few exceptions, which you can catch in your activity/fragment and to show your user exact error message. Provider class checks if connection exists, or it checks type of network connection (WIFI/Mobile), and few other useful exceptions.
+Provider class checks if connection exists, or it checks type of network connection (WIFI/Mobile), and few other useful exceptions.
 
 Provider class contains pure JSONObject and String representation of JSONObject, which you can use for any additional actions unsupported by this library.
 
