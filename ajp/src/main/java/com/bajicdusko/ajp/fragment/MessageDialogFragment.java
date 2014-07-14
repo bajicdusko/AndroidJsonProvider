@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ba.nsc.iptv.R;
+import com.bajicdusko.ajp.R;
 
 
 public class MessageDialogFragment extends DialogFragment implements OnClickListener {

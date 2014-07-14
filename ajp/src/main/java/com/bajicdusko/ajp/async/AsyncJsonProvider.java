@@ -3,6 +3,7 @@ package com.bajicdusko.ajp.async;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 
+import com.bajicdusko.ajp.R;
 import com.bajicdusko.ajp.exceptions.NetworkStatePermissionException;
 import com.bajicdusko.ajp.exceptions.NotConnectedException;
 import com.bajicdusko.ajp.exceptions.ResponseStatusException;
@@ -15,8 +16,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import ba.nsc.iptv.R;
 
 
 /**
