@@ -44,11 +44,12 @@ Yes, library recognizes arrays in JSON file if you have defined array in your cl
 Lets use classes defined above and JSON defined above. On Android to fetch data from JSON and serialize it to defined model class, you have to make a network request in another thread, so that UI thread stays unlocked. 
 
 ```
-onCreate(Bundle savedInstance){
+public onCreate(Bundle savedInstance){
     .
     .
     .
 
+    //Line below assumes that MainActivity implements OnDataLoaded interface
     new AsyncJsonProvider(getActivity(), Planet.class, "http://json.txt").shortExecute((MainActivity) getActivity());
 
     //or
@@ -63,6 +64,30 @@ onCreate(Bundle savedInstance){
         }
     });
 }
+```
+
+If you need to load array of objects, it is easy as an example above:
+
+```
+public onCreate(Bundle savedInstance){
+    .
+    .
+    .
+
+    //Line below assumes that MainActivity implements OnArrayDataLoaded interface
+    new AsyncJsonProvider(this, Planet.class, "http://jsonarray.txt").shortArrayExecute((MainActivity) getActivity());
+
+    //or
+
+    new AsyncJsonProvider(this, Planet.class, "http://jsonarray.txt").shortArrayExecute(new OnArrayDataLoaded() {
+                    @Override
+                    public void OnModelArrayLoaded(ArrayList responseModelArray) {                        
+                        ArrayList<Planet> channels = (ArrayList<Planet>) responseModelArray;
+                        //fill listView here for example
+                    }
+                });
+}
+
 ```
 
 As an addition, on any exception in super.onPostExecute() DialogFragment will popout with proper message, or healthy model will return.
