@@ -36,7 +36,13 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
         this.tClass = tClass;
         this.url = url;
         this.activity = activity;
-        onDataLoaded = (OnDataLoaded)activity;
+        try {
+            onDataLoaded = (OnDataLoaded) activity;
+        }
+        catch(Exception ex)
+        {
+
+        }
     }
 
     public AsyncJsonProvider(FragmentActivity activity, Class<T> tClass, String url, Request request, int key)
