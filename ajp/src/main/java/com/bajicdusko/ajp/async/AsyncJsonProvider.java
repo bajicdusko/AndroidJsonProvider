@@ -3,7 +3,6 @@ package com.bajicdusko.ajp.async;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 
-import com.bajicdusko.ajp.R;
 import com.bajicdusko.ajp.exceptions.NetworkStatePermissionException;
 import com.bajicdusko.ajp.exceptions.NotConnectedException;
 import com.bajicdusko.ajp.exceptions.ResponseStatusException;
@@ -15,13 +14,15 @@ import com.bajicdusko.ajp.util.Utility;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import ba.nsc.iptv.R;
 
 
 /**
  * Created by Bajic on 12-Jul-14.
  */
-public class AsyncJsonProvider<T extends Model, Request extends Model> extends AsyncTask<Void, Void, Object> {
+public class AsyncJsonProvider<T extends Model, Request extends Model> extends AsyncTask<Object, Void, Object> {
 
     Class<T> tClass = null;
     Request request = null;
@@ -29,6 +30,9 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
     String url;
     FragmentActivity activity;
     OnDataLoaded<T> onDataLoaded;
+    OnArrayDataLoaded<T> onArrayDataLoaded;
+
+    ResponseType responseType;
 
 
     public AsyncJsonProvider(FragmentActivity activity, Class<T> tClass, String url)
@@ -61,7 +65,7 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
     }
 
     @Override
-    protected Object doInBackground(Void... params) {
+    protected Object doInBackground(Object... params) {
         return Run(tClass, url);
     }
 
@@ -73,21 +77,42 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
             Utility.ShowMessage(activity, "", response.getClass().getName());
         else
         {
-            T m = (T)response;
-            if(onDataLoaded != null)
-                onDataLoaded.OnModelLoaded(m);
+
+            if(responseType == ResponseType.SingleModel) {
+                T m = (T) response;
+                if (onDataLoaded != null)
+                    onDataLoaded.OnModelLoaded(m);
+            }
+            else{
+                ArrayList<T> m = (ArrayList<T>) response;
+                if (onArrayDataLoaded != null)
+                    onArrayDataLoaded.OnModelArrayLoaded(m);
+            }
         }
     }
 
     private Object Run(Class<T> mClass, String url)
     {
         try {
-            Model result = null;
-            if(request == null)
-                result = Provider.getModel(mClass, activity, url);
-            else
-                result = Provider.getModel(mClass, activity, url, request);
-            return result;
+
+            if(responseType == ResponseType.SingleModel) {
+
+                Model result = null;
+                if (request == null)
+                    result = Provider.getModel(mClass, activity, url);
+                else
+                    result = Provider.getModel(mClass, activity, url, request);
+                return result;
+            }
+            else{
+                ArrayList<T> result = null;
+                if (request == null)
+                    result = Provider.getModelArray(mClass, activity, url);
+                else
+                    result = Provider.getModelArray(mClass, activity, url, request);
+                return result;
+            }
+
         } catch (JSONException e) {
             return e;
         } catch (UrlConnectionException e) {
@@ -110,7 +135,18 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
     public final AsyncJsonProvider shortExecute(OnDataLoaded<T> onDataLoadedListener)
     {
         onDataLoaded = onDataLoadedListener;
-        this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void)null);
+        responseType = ResponseType.SingleModel;
+        this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
         return this;
     }
+
+    public final AsyncJsonProvider shortArrayExecute(OnArrayDataLoaded<T> onArrayDataLoadedListener)
+    {
+        onArrayDataLoaded = onArrayDataLoadedListener;
+        responseType = ResponseType.ArrayModel;
+        this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        return this;
+    }
+
+
 }

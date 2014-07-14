@@ -79,7 +79,7 @@ public class Provider {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Model> ArrayList<T> getModelArray(Class<T> tClass, Context context, String url, T requestObject) throws UrlConnectionException, NotConnectedException, NetworkStatePermissionException, JSONException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
+    public static <T extends Model, E extends Model> ArrayList<T> getModelArray(Class<T> tClass, Context context, String url, E requestObject) throws UrlConnectionException, NotConnectedException, NetworkStatePermissionException, JSONException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
         JSONArray jsonArray = getJsonArray(context, url, requestObject);
         ArrayList<T> items = new ArrayList<T>();
 
