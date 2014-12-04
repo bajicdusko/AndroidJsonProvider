@@ -19,7 +19,7 @@ import com.bajicdusko.R;
 import com.bajicdusko.ajp.iajp.IImageLoader;
 import com.bajicdusko.ajp.util.Utilities;
 
-public class ApplyImageAsync extends AsyncTask<Void, Void, Object> implements IImageLoader {
+public class FetchLargeImage extends AsyncTask<Void, Void, Object> implements IImageLoader {
 	public Context context = null;
 	public Activity activity = null;
 	public String url = "";
@@ -27,7 +27,7 @@ public class ApplyImageAsync extends AsyncTask<Void, Void, Object> implements II
 	String url_md5 = "";
 	
 
-	public ApplyImageAsync(Activity activity, String url, ImageView here) {
+	public FetchLargeImage(Activity activity, String url, ImageView here) {
 		super();
 		this.activity = activity;
         this.context = activity;
@@ -39,7 +39,7 @@ public class ApplyImageAsync extends AsyncTask<Void, Void, Object> implements II
 		    this.here.setTag(url);
 	}
 
-    public ApplyImageAsync(Context context, String url, ImageView here) {
+    public FetchLargeImage(Context context, String url, ImageView here) {
         super();
         this.context = context;
         this.url = url;

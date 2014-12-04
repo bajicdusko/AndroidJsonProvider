@@ -8,9 +8,9 @@ import android.widget.ImageView;
 
 import com.bajicdusko.R;
 
-public class ApplySmallImageAsync extends ApplyImageAsync {
+public class FetchSmallImage extends FetchLargeImage {
 
-	public ApplySmallImageAsync(Activity activity, String url, ImageView here) {
+	public FetchSmallImage(Activity activity, String url, ImageView here) {
 		super(activity, url, here);
 	}
 

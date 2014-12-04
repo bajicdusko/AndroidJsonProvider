@@ -15,13 +15,13 @@ import java.io.IOException;
 /**
  * Created by Bajic on 25-Oct-14.
  */
-public class ApplyBitmapImage extends ApplyImageAsync {
+public class FetchBitmapImage extends FetchLargeImage {
 
-    public ApplyBitmapImage(FragmentActivity activity, String url, ImageView here) {
+    public FetchBitmapImage(FragmentActivity activity, String url, ImageView here) {
         super(activity, url, here);
     }
 
-    public ApplyBitmapImage(Context context, String url, ImageView here) {
+    public FetchBitmapImage(Context context, String url, ImageView here) {
         super(context, url, here);
     }
 
