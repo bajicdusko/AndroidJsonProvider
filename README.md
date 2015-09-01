@@ -38,7 +38,7 @@ AJP call is shown below.
          super.onCreate(savedInstanceState);
          setContentView(R.layout.activity_main);
  
-         new AsyncJsonProvider&lt;PlanetModel, Model&gt;(this, PlanetModel.class, "http://url").shortExecute(new OnDataLoaded() {
+         new AsyncJsonProvider<PlanetModel, Model>(this, PlanetModel.class, "http://url").shortExecute(new OnDataLoaded() {
              @Override
              public void OnModelLoaded(PlanetModel responseModel) {
                  //this is where you put all after data loading logic
@@ -111,7 +111,7 @@ AJP call is identical in both cases with difference of model class usage (Planet
 
 AJP call.
 
-      new AsyncJsonProvider&lt;PlanetModel, Model&gt;(this, PlanetModel.class, "http://url").shortArrayExecute(new OnDataLoaded() {
+      new AsyncJsonProvider<PlanetModel, Model>(this, PlanetModel.class, "http://url").shortArrayExecute(new OnDataLoaded() {
              @Override
              public void OnModelArrayLoaded(PlanetModel[] responseArrayModel) {
                  //todo something with planet array data
