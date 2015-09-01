@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
 
 import com.bajicdusko.R;
+import com.bajicdusko.ajp.util.Utilities;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +16,7 @@ import java.io.IOException;
 /**
  * Created by Bajic on 25-Oct-14.
  */
-public class FetchBitmapImage extends FetchLargeImage {
+public class FetchBitmapImage extends FetchImageAsync {
 
     public FetchBitmapImage(FragmentActivity activity, String url, ImageView here) {
         super(activity, url, here);
@@ -26,12 +27,8 @@ public class FetchBitmapImage extends FetchLargeImage {
     }
 
     @Override
-    protected void onPreExecute() {
-        try{ here.setImageResource(R.drawable.ic_launcher); }
-        catch(Exception ex)
-        {
-
-        }
+    protected int GetDefaultImageResource() {
+        return R.drawable.ic_launcher;
     }
 
     @Override
@@ -66,6 +63,7 @@ public class FetchBitmapImage extends FetchLargeImage {
 
     @Override
     public Bitmap SetDimensionsAndFetchImage(String url) throws IOException {
-        return FetchImage(url, R.dimen.bitmap_width, R.dimen.bitmap_height);
+        int imageDimm = Utilities.GetDensityImageDimenssion(context, 110);
+        return FetchImage(url, imageDimm, imageDimm);
     }
 }

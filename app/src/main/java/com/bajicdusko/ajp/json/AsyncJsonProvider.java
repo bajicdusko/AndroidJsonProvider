@@ -14,6 +14,7 @@ import com.bajicdusko.ajp.exceptions.UrlConnectionException;
 import com.bajicdusko.ajp.iajp.OnArrayDataLoaded;
 import com.bajicdusko.ajp.iajp.OnDataLoaded;
 import com.bajicdusko.ajp.util.Utilities;
+import com.bajicdusko.ajp.util.Utility;
 
 import org.json.JSONException;
 
@@ -207,14 +208,14 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
             catch (Exception ex)
             {
                 if(activity != null)
-                    Utilities.ShowMessage(activity, "", activity.getString(R.string.no_connection), Utilities.MESSAGE_FRAGMENT_KEY);
+                    Utility.ShowMessage(activity, "", activity.getString(R.string.no_connection), Utilities.MESSAGE_FRAGMENT_KEY);
                 else
                     RiseErrorEvents(context.getString(R.string.no_connection));
             }
         }
         else if(response instanceof Exception) {
             if(activity != null)
-                Utilities.ShowMessage(activity, "", response.getClass().getName(), Utilities.MESSAGE_FRAGMENT_KEY);
+                Utility.ShowMessage(activity, "", response.getClass().getName(), Utilities.MESSAGE_FRAGMENT_KEY);
             else
                 RiseErrorEvents(response.getClass().getName());
         }

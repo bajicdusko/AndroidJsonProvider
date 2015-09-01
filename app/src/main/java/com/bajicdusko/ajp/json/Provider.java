@@ -28,9 +28,8 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import com.bajicdusko.ajp.exceptions.*;
-import com.bajicdusko.ajp.json.annotations.JsonRequestParam;
-import com.bajicdusko.ajp.json.annotations.JsonResponseParam;
-import com.bajicdusko.ajp.util.Utilities;
+import com.bajicdusko.ajp.util.Utility;
+import com.bajicdusko.ajp.json.annotations.*;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -42,22 +41,6 @@ public class Provider {
     static String EMPTY_STRING = "";
     public static String JsonContent = "";
 
-    /**
-     * Returns an ArrayList of tClass objects, created from JsonContent. tClass object is first method argument.
-     * @param tClass
-     * @param jsonContent
-     * @param <T>
-     * @return
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws JSONException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
     public static <T extends Model> ArrayList<T> getModelArray(Class<T> tClass, String jsonContent) throws UrlConnectionException, NotConnectedException, NetworkStatePermissionException, JSONException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException
     {
         JSONArray jsonArray = new JSONArray(jsonContent);
@@ -77,23 +60,7 @@ public class Provider {
         return items;
     }
 
-    /**
-     * Returns an ArrayList of tClass objects, created from content received from given url.
-     * @param tClass
-     * @param context
-     * @param url
-     * @param <T>
-     * @return
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws JSONException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
+
     public static <T extends Model> ArrayList<T> getModelArray(Class<T> tClass, Context context, String url) throws UrlConnectionException, NotConnectedException, NetworkStatePermissionException, JSONException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
         JSONArray jsonArray = getJsonArray(context, url);
         ArrayList<T> items = new ArrayList<T>();
@@ -112,25 +79,6 @@ public class Provider {
         return items;
     }
 
-    /**
-     * Returns an ArrayList of tClass objects, created from content from given url. requestObject param is Model subclass deserialized to JSON and sent to server.
-     * @param tClass
-     * @param context
-     * @param url
-     * @param requestObject
-     * @param <T>
-     * @param <E>
-     * @return
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws JSONException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
     @SuppressWarnings("unchecked")
     public static <T extends Model, E extends Model> ArrayList<T> getModelArray(Class<T> tClass, Context context, String url, E requestObject) throws UrlConnectionException, NotConnectedException, NetworkStatePermissionException, JSONException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
         JSONArray jsonArray = getJsonArray(context, url, requestObject);
@@ -150,17 +98,6 @@ public class Provider {
         return items;
     }
 
-    /**
-     * Serialize JsonContent to subclass of Model
-     * @param tClass
-     * @param context
-     * @param json
-     * @param <T>
-     * @return
-     * @throws JSONException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     */
     public static <T extends Model> T getModelForJson(Class<T> tClass, Context context, String json) throws JSONException, IllegalAccessException, InstantiationException
     {
         T responseObject = tClass.newInstance();
@@ -169,24 +106,6 @@ public class Provider {
         return responseObject;
     }
 
-    /**
-     * Serialize content received from url to subclass of Model
-     * @param tClass
-     * @param context
-     * @param url
-     * @param <T>
-     * @return
-     * @throws JSONException
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     * @throws InstantiationException
-     */
     public static <T extends Model> T getModel(Class<T> tClass, Context context, String url) throws JSONException, UrlConnectionException, NotConnectedException, NetworkStatePermissionException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException, InstantiationException {
         T responseObject = tClass.newInstance();
         responseObject.setJsonObject(getJsonObject(context, url));
@@ -194,26 +113,6 @@ public class Provider {
         return responseObject;
     }
 
-    /**
-     * Serialize content received from url to subclass of Model. RequestObject is deserialized and sent to server.
-     * @param tClass
-     * @param context
-     * @param url
-     * @param requestObject
-     * @param <T>
-     * @param <E>
-     * @return
-     * @throws JSONException
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     * @throws InstantiationException
-     */
     public static <T extends Model, E extends Model> T getModel(Class<T> tClass, Context context, String url, E requestObject) throws JSONException, UrlConnectionException, NotConnectedException, NetworkStatePermissionException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException, InstantiationException {
         T responseObject = tClass.newInstance();
         responseObject.setJsonObject(getJsonObject(context, url, requestObject));
@@ -221,84 +120,34 @@ public class Provider {
         return responseObject;
     }
 
-    /**
-     * Returns JsonArray from content received from given url
-     * @param context
-     * @param url
-     * @return
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws JSONException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
+    public static <T extends Model> T getModel(Class<T> tClass, Context context, String url, String json) throws JSONException, UrlConnectionException, NotConnectedException, NetworkStatePermissionException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException, InstantiationException {
+        T responseObject = tClass.newInstance();
+        responseObject.setJsonObject(getJsonObject(context, url, json));
+        responseObject = getModel(responseObject);
+        return responseObject;
+    }
+
+    public static String getNscToken(Context context, String url) throws IOException, NetworkStatePermissionException, NotConnectedException, ResponseStatusException
+    {
+        DownloadJSON(context, url);
+        return JsonContent;
+    }
+
     private static JSONArray getJsonArray(Context context, String url) throws UrlConnectionException, NotConnectedException, NetworkStatePermissionException, JSONException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
         String content = DownloadJSON(context, url);
         return new JSONArray(content);
     }
 
-    /**
-     * Returns JsonArray from content received from given url. RequestObject is deserialized to JSON and sent to server
-     * @param context
-     * @param url
-     * @param requestObject
-     * @param <E>
-     * @return
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws JSONException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
-    private static <E extends Model> JSONArray getJsonArray(Context context, String url, E requestObject) throws UrlConnectionException, NotConnectedException, NetworkStatePermissionException, JSONException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
-        String content = DownloadJSON(context, url, requestObject);
+    private static <E extends Model> JSONArray getJsonArray(Context context, String url, E e) throws UrlConnectionException, NotConnectedException, NetworkStatePermissionException, JSONException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
+        String content = DownloadJSON(context, url, e);
         return new JSONArray(content);
     }
 
-    /**
-     * Returns JsonObject from content received from given url.
-     * @param context
-     * @param url
-     * @return
-     * @throws JSONException
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
+
     public static JSONObject getJsonObject(Context context, String url) throws JSONException, UrlConnectionException, NotConnectedException, NetworkStatePermissionException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
         return new JSONObject( DownloadJSON(context, url ) );
     }
 
-    /**
-     * Returns JsoNObject from content received from given url. RequestObject is deserialized to JSON and sent to server
-     * @param context
-     * @param url
-     * @param e
-     * @param <E>
-     * @return
-     * @throws JSONException
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws ClientProtocolException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
     public static <E extends Model> JSONObject getJsonObject(Context context, String url, E e) throws JSONException, UrlConnectionException, NotConnectedException, NetworkStatePermissionException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException {
         return new JSONObject( DownloadJSON(context, url, e) );
     }
@@ -311,18 +160,7 @@ public class Provider {
     /*
     * Method for HTTP GET request
     * */
-
-    /**
-     * Downloads content from given url via HTTPGET
-     * @param context
-     * @param url
-     * @return
-     * @throws IOException
-     * @throws NetworkStatePermissionException
-     * @throws NotConnectedException
-     * @throws ResponseStatusException
-     */
-     private synchronized static String DownloadJSON(Context context, String url) throws IOException, NetworkStatePermissionException, NotConnectedException, ResponseStatusException
+    private synchronized static String DownloadJSON(Context context, String url) throws IOException, NetworkStatePermissionException, NotConnectedException, ResponseStatusException
     {
 
         IsConnected(context);
@@ -330,8 +168,8 @@ public class Provider {
         String content = "";
 
         HttpGet getRequest = new HttpGet(url);
-        if(Utilities.SESSION_ID != null && Utilities.SESSION_ID != "")
-            getRequest.addHeader("Cookie", " SESSIONID=" + Utilities.SESSION_ID);
+        if(Utility.SESSION_ID != null && Utility.SESSION_ID != "")
+            getRequest.addHeader("Cookie", " SESSIONID=" + Utility.SESSION_ID);
 
         getRequest.setHeader("Content-Type", "application/json");
 
@@ -362,29 +200,17 @@ public class Provider {
     }
 
 
-    /**
-     * Downloads content from given url via HTTPPOST. RequestModel is deserialized to JSON and sent to server.
-     * @param context
-     * @param url
-     * @param requestModel
-     * @param <E>
-     * @return
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws JSONException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
-    private synchronized static <E extends Model> String DownloadJSON(Context context, String url, E requestModel) throws
+    /*
+            Method for HTTP POST request
+         */
+    private synchronized static <E extends Model> String DownloadJSON(Context context, String url, E e) throws
             UrlConnectionException,
             NotConnectedException,
             NetworkStatePermissionException,
             JSONException,
             IllegalAccessException,
             IllegalArgumentException,
+            ClientProtocolException,
             IOException,
             ResponseStatusException
     {
@@ -392,14 +218,14 @@ public class Provider {
         IsConnected(context);
 
         HttpPost postRequest = new HttpPost(url);
-        if(Utilities.SESSION_ID != null && Utilities.SESSION_ID != "")
-            postRequest.addHeader("Cookie", " SESSIONID=" + Utilities.SESSION_ID);
+        if(Utility.SESSION_ID != null && Utility.SESSION_ID != "")
+            postRequest.addHeader("Cookie", " SESSIONID=" + Utility.SESSION_ID);
 
         postRequest.setHeader("Content-Type", "application/json");
 
         JSONStringer requestJson = new JSONStringer();
 
-        Field[] fields = requestModel.getClass().getFields();
+        Field[] fields = e.getClass().getFields();
 
         JSONStringer obj = requestJson.object();
         for (Field field : fields) {
@@ -407,13 +233,17 @@ public class Provider {
             Annotation a = field.getAnnotation(JsonRequestParam.class);
 
             if(a != null)
-                obj.key(((JsonRequestParam)a).Name()).value(field.get(requestModel).toString());
+            {
+
+                obj.key(((JsonRequestParam)a).Name()).value(field.get(e).toString());
+
+            }
         }
         requestJson.endObject();
 
 
-        StringEntity requestEntity = new StringEntity(requestJson.toString());
-        postRequest.setEntity(requestEntity);
+        StringEntity loginEntity = new StringEntity(requestJson.toString());
+        postRequest.setEntity(loginEntity);
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(postRequest);
@@ -441,22 +271,6 @@ public class Provider {
         return response;
     }
 
-
-    /**
-     * Downloads content from given url via HTTPPOST. Json param is sent to server.
-     * @param context
-     * @param url
-     * @param json
-     * @return
-     * @throws UrlConnectionException
-     * @throws NotConnectedException
-     * @throws NetworkStatePermissionException
-     * @throws JSONException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws IOException
-     * @throws ResponseStatusException
-     */
     private synchronized static String DownloadJSON(Context context, String url, String json) throws
             UrlConnectionException,
             NotConnectedException,
@@ -464,6 +278,7 @@ public class Provider {
             JSONException,
             IllegalAccessException,
             IllegalArgumentException,
+            ClientProtocolException,
             IOException,
             ResponseStatusException
     {
@@ -570,7 +385,17 @@ public class Provider {
         conn.connect();
         OutputStream out = conn.getOutputStream();
 
+
+        //FileInputStream fis = new FileInputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 50, out);
+
+//		byte[] buf = new byte[1024];
+//		int len;
+//		while ((len = fis.read(buf)) > 0) {
+//			out.write(buf, 0, len);
+//		}
+//		fis.close();		
+
         out.flush();
         out.close();
 
@@ -592,14 +417,6 @@ public class Provider {
         return CreateModelSubclass(tClass, value);
     }
 
-    /**
-     * With java reflection usage, instance of Model subclass is created from values of JsonObject
-     * @param t
-     * @param <T>
-     * @return
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     */
     private static <T extends Model> T getModel(T t) throws InstantiationException, IllegalAccessException
     {
         Field[] fields = t.getClass().getFields();
@@ -698,5 +515,20 @@ public class Provider {
                 throw new NetworkStatePermissionException();
             }
         }
+    }
+
+    public static boolean IsWiFiConnection(Context context)
+    {
+        try
+        {
+            ConnectivityManager conman = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            if(conman == null || conman.getActiveNetworkInfo() == null)
+                throw new NotConnectedException();
+            else
+                return conman.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+
+        }
+        catch(Exception ex){ return false; }
     }
 }

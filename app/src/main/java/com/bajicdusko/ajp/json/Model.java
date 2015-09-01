@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.text.Html;
 
-import com.bajicdusko.ajp.json.annotations.JsonResponseParam;
+import com.bajicdusko.ajp.json.annotations.*;
 
 public class Model {
 	protected JSONObject jsonObject = null;
@@ -92,7 +92,7 @@ public class Model {
             return (float)this.jsonObject.getDouble(floatValue);
         }
         catch(Exception ex){
-            return -1;
+            return 0;
         }
     }
 
@@ -103,7 +103,7 @@ public class Model {
             return this.jsonObject.getDouble(doubleValue);
         }
         catch(Exception ex){
-            return -1;
+            return 0;
         }
     }
 	
@@ -119,11 +119,13 @@ public class Model {
 		ArrayList<Model> items = new ArrayList<Model>();
 
 		try {
-			JSONArray list = this.jsonObject.getJSONArray(fieldName);
+			JSONArray list = (JSONArray) this.jsonObject.getJSONArray(fieldName);
 			for ( int i = 0 ; i < list.length() ; i++ ) {
 				items.add(new Model(list.getJSONObject(i)));
 			}
-		} catch (Exception e) {	}
+		} catch (Exception e) {
+			// Samo ce vratiti praznu listu
+		}
 
 		return items;
 	}
@@ -137,4 +139,10 @@ public class Model {
 
 		return item;
 	}
+	
+
+	
+	
+	
+	
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -14,7 +13,7 @@ import android.view.ViewGroup;
 import com.bajicdusko.R;
 import com.bajicdusko.ajp.iajp.OnDialogClickListener;
 
-public class MessageDialogFragment extends DialogFragment implements OnClickListener {
+public class MessageDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
 	
 	String Message;	
 	String Title;
@@ -23,7 +22,7 @@ public class MessageDialogFragment extends DialogFragment implements OnClickList
 	int KEY = 9999;
 	Object[] args;
 	
-	com.bajicdusko.ajp.iajp.OnDialogClickListener OnDialogClickListener = null;
+	OnDialogClickListener OnDialogClickListener = null;
 	Activity activity;
 		
 	public void setDialogListener(OnDialogClickListener listener)
