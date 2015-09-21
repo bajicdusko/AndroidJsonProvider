@@ -5,14 +5,17 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 
 import com.bajicdusko.R;
-import com.bajicdusko.ajp.json.enums.ResponseType;
 import com.bajicdusko.ajp.cache.CacheManager;
+import com.bajicdusko.ajp.cache.CacheModeEnum;
 import com.bajicdusko.ajp.exceptions.NetworkStatePermissionException;
 import com.bajicdusko.ajp.exceptions.NotConnectedException;
 import com.bajicdusko.ajp.exceptions.ResponseStatusException;
 import com.bajicdusko.ajp.exceptions.UrlConnectionException;
 import com.bajicdusko.ajp.iajp.OnArrayDataLoaded;
 import com.bajicdusko.ajp.iajp.OnDataLoaded;
+import com.bajicdusko.ajp.json.Model;
+import com.bajicdusko.ajp.json.Provider;
+import com.bajicdusko.ajp.json.enums.ResponseType;
 import com.bajicdusko.ajp.util.Utilities;
 import com.bajicdusko.ajp.util.Utility;
 
@@ -20,6 +23,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 
 /**
  * Created by Bajic on 12-Jul-14.
@@ -38,6 +42,10 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
     ResponseType responseType;
 
     boolean saveToCache = false;
+    CacheModeEnum cacheModeEnum = CacheModeEnum.OnLineContentFirst;
+
+
+
 
     public AsyncJsonProvider(FragmentActivity activity, Class<T> tClass, String url)
     {
@@ -59,6 +67,37 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
         this.tClass = tClass;
         this.url = url;
         this.context = context;
+        try {
+            onDataLoaded = (OnDataLoaded) activity;
+        }
+        catch(Exception ex)
+        {
+
+        }
+    }
+
+    public AsyncJsonProvider(FragmentActivity activity, Class<T> tClass, String url, CacheModeEnum cacheModeEnum)
+    {
+        this.tClass = tClass;
+        this.url = url;
+        this.activity = activity;
+        this.context = activity;
+        this.cacheModeEnum = cacheModeEnum;
+        try {
+            onDataLoaded = (OnDataLoaded) activity;
+        }
+        catch(Exception ex)
+        {
+
+        }
+    }
+
+    public AsyncJsonProvider(Context context, Class<T> tClass, String url, CacheModeEnum cacheModeEnum)
+    {
+        this.tClass = tClass;
+        this.url = url;
+        this.context = context;
+        this.cacheModeEnum = cacheModeEnum;
         try {
             onDataLoaded = (OnDataLoaded) activity;
         }
@@ -154,43 +193,46 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
 
     private Object Run(Class<T> mClass, String url)
     {
-        try {
+        if(this.cacheModeEnum == CacheModeEnum.OnLineContentFirst) {
+            try {
 
-            if(responseType == ResponseType.SingleModel) {
+                if (responseType == ResponseType.SingleModel) {
 
-                Model result = null;
-                if (request == null)
-                    result = Provider.getModel(mClass, context, url);
-                else
-                    result = Provider.getModel(mClass, context, url, request);
-                return result;
+                    Model result = null;
+                    if (request == null)
+                        result = Provider.getModel(mClass, context, url);
+                    else
+                        result = Provider.getModel(mClass, context, url, request);
+                    return result;
+                } else {
+                    ArrayList<T> result = null;
+                    if (request == null)
+                        result = Provider.getModelArray(mClass, context, url);
+                    else
+                        result = Provider.getModelArray(mClass, context, url, request);
+                    return result;
+                }
+
+            } catch (JSONException e) {
+                return e;
+            } catch (UrlConnectionException e) {
+                return e;
+            } catch (NotConnectedException e) {
+                return e;
+            } catch (NetworkStatePermissionException e) {
+                return e;
+            } catch (IllegalAccessException e) {
+                return e;
+            } catch (IOException e) {
+                return e;
+            } catch (ResponseStatusException e) {
+                return e;
+            } catch (InstantiationException e) {
+                return e;
             }
-            else{
-                ArrayList<T> result = null;
-                if (request == null)
-                    result = Provider.getModelArray(mClass, context, url);
-                else
-                    result = Provider.getModelArray(mClass, context, url, request);
-                return result;
-            }
-
-        } catch (JSONException e) {
-            return e;
-        } catch (UrlConnectionException e) {
-            return  e;
-        } catch (NotConnectedException e) {
-            return  e;
-        } catch (NetworkStatePermissionException e) {
-            return  e;
-        } catch (IllegalAccessException e) {
-            return  e;
-        } catch (IOException e) {
-            return  e;
-        } catch (ResponseStatusException e) {
-            return  e;
-        } catch (InstantiationException e) {
-            return  e;
         }
+
+        return null;
     }
 
     @Override
@@ -198,7 +240,7 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
 
         CacheManager<T> cacheManager = new CacheManager(context, url);
 
-        if(response instanceof NotConnectedException)
+        if(cacheModeEnum == CacheModeEnum.CacheContentFirst || response instanceof NotConnectedException)
         {
             try
             {
@@ -215,7 +257,7 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
         }
         else if(response instanceof Exception) {
             if(activity != null)
-                Utility.ShowMessage(activity, "", response.getClass().getName(), Utilities.MESSAGE_FRAGMENT_KEY);
+                Utility.ShowMessage(activity, "", context.getString(R.string.errorOccuredOnDataFetching), Utilities.MESSAGE_FRAGMENT_KEY);
             else
                 RiseErrorEvents(response.getClass().getName());
         }
