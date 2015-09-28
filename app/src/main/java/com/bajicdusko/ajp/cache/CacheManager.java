@@ -32,7 +32,7 @@ public class CacheManager<T extends Model> {
     }
 
 
-    public T GetContent(Class<T> tClass) throws IOException, FileNotFoundException
+    private String ReadContent() throws IOException, FileNotFoundException
     {
         String content;
         File file = new File(context.getDir("data", context.MODE_PRIVATE), md5FileName);
@@ -54,9 +54,34 @@ public class CacheManager<T extends Model> {
         in.close();
         in.close();
 
+        return content;
+    }
+
+    public T GetContent(Class<T> tClass) throws IOException, FileNotFoundException
+    {
+
+        String jsonContent = ReadContent();
+
         T t = null;
         try {
-           t = Provider.getModelForJson(tClass, context, content);
+            t = Provider.getModelForJson(tClass, context, jsonContent);
+        }
+        catch (Exception ex)
+        {
+            String dummy = "";
+        }
+
+        return t;
+    }
+
+    public ArrayList<T> GetContentArray(Class<T> tClass) throws IOException, FileNotFoundException
+    {
+
+        String jsonContent = ReadContent();
+
+        ArrayList<T> t = null;
+        try {
+            t = Provider.getModelArrayForJson(tClass, context, jsonContent);
         }
         catch (Exception ex)
         {

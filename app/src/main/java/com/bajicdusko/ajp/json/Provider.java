@@ -106,6 +106,25 @@ public class Provider {
         return responseObject;
     }
 
+    public static <T extends Model> ArrayList<T> getModelArrayForJson(Class<T> tClass, Context context, String json) throws JSONException, IllegalAccessException, InstantiationException
+    {
+        JSONArray jsonArray = new JSONArray(json);
+        ArrayList<T> items = new ArrayList<T>();
+
+        try
+        {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                T tInstance = tClass.newInstance();
+                tInstance.setJsonObject(jsonArray.getJSONObject(i));
+                tInstance = getModel(tInstance);
+                items.add(tInstance);
+            }
+        }
+        catch (Exception e) {}
+
+        return items;
+    }
+
     public static <T extends Model> T getModel(Class<T> tClass, Context context, String url) throws JSONException, UrlConnectionException, NotConnectedException, NetworkStatePermissionException, IllegalAccessException, IllegalArgumentException, ClientProtocolException, IOException, ResponseStatusException, InstantiationException {
         T responseObject = tClass.newInstance();
         responseObject.setJsonObject(getJsonObject(context, url));

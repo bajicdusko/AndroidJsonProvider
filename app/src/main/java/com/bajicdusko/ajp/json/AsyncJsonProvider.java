@@ -139,7 +139,7 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
     }
 
 
-    public AsyncJsonProvider(FragmentActivity activity, Class<T> tClass, String url, Request request, int key)
+    public AsyncJsonProvider(FragmentActivity activity, Class<T> tClass, String url, Request request)
     {
         this.tClass = tClass;
         this.request = request;
@@ -155,7 +155,7 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
         }
     }
 
-    public AsyncJsonProvider(Context context, Class<T> tClass, String url, Request request, int key)
+    public AsyncJsonProvider(Context context, Class<T> tClass, String url, Request request)
     {
         this.tClass = tClass;
         this.request = request;
@@ -244,7 +244,11 @@ public class AsyncJsonProvider<T extends Model, Request extends Model> extends A
         {
             try
             {
-                response = cacheManager.GetContent(tClass);
+                if(responseType == ResponseType.SingleModel)
+                    response = cacheManager.GetContent(tClass);
+                else
+                    response = cacheManager.GetContentArray(tClass);
+
                 RiseLoadEvents(cacheManager, response, false);
             }
             catch (Exception ex)
